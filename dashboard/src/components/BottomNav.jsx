@@ -1,7 +1,8 @@
-import { Home, Navigation, Zap } from 'lucide-react'
+import { Home, Navigation, Zap, BarChart2 } from 'lucide-react'
 
 const tabs = [
   { id: 'home', label: 'Accueil', icon: Home },
+  { id: 'stats', label: 'Stats', icon: BarChart2 },
   { id: 'trips', label: 'Trajets', icon: Navigation },
   { id: 'charge', label: 'Recharges', icon: Zap },
 ]

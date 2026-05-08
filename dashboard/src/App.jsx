@@ -8,6 +8,7 @@ import BottomNav from './components/BottomNav'
 import PreconditionButton from './components/PreconditionButton'
 import TripsPage from './pages/TripsPage'
 import ChargePage from './pages/ChargePage'
+import StatsPage from './pages/StatsPage'
 
 export default function App() {
   const [tab, setTab] = useState('home')
@@ -60,6 +61,7 @@ export default function App() {
           </>
         )}
 
+        {tab === 'stats' && <StatsPage />}
         {tab === 'trips' && <TripsPage />}
         {tab === 'charge' && <ChargePage />}
 
