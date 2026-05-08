@@ -1,0 +1,35 @@
+# psa-car-controller — fichiers sensibles (credentials, tokens, DB)
+config.json
+config.ini
+cars.json
+otp.bin
+charge_config.json
+info.db
+info.db-shm
+info.db-wal
+activity.log
+certs/
+mypeugeot.apk
+mypeugeot.apk.bz2
+
+# Python
+venv/
+__pycache__/
+*.pyc
+*.pyo
+
+# Node
+dashboard/node_modules/
+dashboard/dist/
+
+# Claude Code
+.claude/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Env
+.env
+.env.local
+.env.production
