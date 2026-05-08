@@ -5,7 +5,7 @@ import StatsRow from './components/StatsRow'
 import MapCard from './components/MapCard'
 import StatusBar from './components/StatusBar'
 import BottomNav from './components/BottomNav'
-import LockButton from './components/LockButton'
+import PreconditionButton from './components/PreconditionButton'
 import TripsPage from './pages/TripsPage'
 import ChargePage from './pages/ChargePage'
 
@@ -53,7 +53,7 @@ export default function App() {
               <>
                 <BatteryCard energy={energy} />
                 <StatsRow data={data} />
-                <LockButton />
+                <PreconditionButton currentStatus={data?.preconditionning?.air_conditioning?.status} />
                 <MapCard position={data?.last_position} />
               </>
             )}
