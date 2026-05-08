@@ -10,7 +10,7 @@ export function useVehicle() {
 
   const fetch_data = useCallback(async () => {
     try {
-      const res = await fetch(`/api/get_vehicleinfo/${VIN}`)
+      const res = await fetch(`https://api.vbasquin.com/get_vehicleinfo/${VIN}`)
       if (!res.ok) throw new Error(`HTTP ${res.status}`)
       const json = await res.json()
       setData(json)

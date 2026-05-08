@@ -6,7 +6,7 @@ export function useTrips() {
 
   const fetch_trips = useCallback(async () => {
     try {
-      const res = await fetch('/api/vehicles/trips')
+      const res = await fetch('https://api.vbasquin.com/vehicles/trips')
       const json = await res.json()
       // sort newest first
       setTrips(json.sort((a, b) => new Date(b.start_at) - new Date(a.start_at)))
