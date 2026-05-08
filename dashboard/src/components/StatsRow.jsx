@@ -6,40 +6,22 @@ export default function StatsRow({ data }) {
   const altitude = data?.last_position?.geometry?.coordinates?.[2]
   const voltage = data?.battery?.voltage
 
-  return (
-    <div className="grid grid-cols-2 gap-3">
-      <StatCard
-        icon={<Thermometer size={18} className="text-blue-400" />}
-        value={temp != null ? `${temp}°C` : '--'}
-        label="Température ext."
-      />
-      <StatCard
-        icon={<Gauge size={18} className="text-purple-400" />}
-        value={mileage != null ? `${Math.round(mileage).toLocaleString('fr-FR')} km` : '--'}
-        label="Kilométrage"
-      />
-      <StatCard
-        icon={<Mountain size={18} className="text-green-400" />}
-        value={altitude != null ? `${Math.round(altitude)} m` : '--'}
-        label="Altitude"
-      />
-      <StatCard
-        icon={<Zap size={18} className="text-yellow-400" />}
-        value={voltage != null ? `${voltage} V` : '--'}
-        label="Tension batterie"
-      />
-    </div>
-  )
-}
+  const stats = [
+    { icon: <Thermometer size={16} className="text-blue-400" />, value: temp != null ? `${temp}°` : '--', label: 'Temp.' },
+    { icon: <Gauge size={16} className="text-purple-400" />, value: mileage != null ? `${Math.round(mileage / 1000 * 10) / 10}k` : '--', label: 'km total' },
+    { icon: <Mountain size={16} className="text-green-400" />, value: altitude != null ? `${Math.round(altitude)}m` : '--', label: 'Altitude' },
+    { icon: <Zap size={16} className="text-yellow-400" />, value: voltage != null ? `${voltage}V` : '--', label: 'Tension' },
+  ]
 
-function StatCard({ icon, value, label }) {
   return (
-    <div className="bg-slate-800/60 rounded-2xl p-4 flex flex-col gap-1">
-      <div className="flex items-center gap-2">
-        {icon}
-        <span className="text-xs text-slate-400">{label}</span>
-      </div>
-      <div className="text-lg font-semibold text-white">{value}</div>
+    <div className="grid grid-cols-4 gap-2">
+      {stats.map((s, i) => (
+        <div key={i} className="glass rounded-2xl p-3 flex flex-col items-center gap-1.5">
+          {s.icon}
+          <div className="text-sm font-bold text-white">{s.value}</div>
+          <div className="text-xs text-white/40">{s.label}</div>
+        </div>
+      ))}
     </div>
   )
 }

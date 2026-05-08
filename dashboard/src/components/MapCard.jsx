@@ -5,17 +5,17 @@ import { Navigation } from 'lucide-react'
 
 const carIcon = L.divIcon({
   html: `<div style="
-    width:32px;height:32px;
-    background:#3b82f6;
-    border:3px solid white;
+    width:36px;height:36px;
+    background:linear-gradient(135deg,#ef4444,#b91c1c);
+    border:2.5px solid rgba(255,255,255,0.8);
     border-radius:50%;
-    box-shadow:0 2px 8px rgba(0,0,0,0.4);
+    box-shadow:0 4px 16px rgba(220,38,38,0.5),0 0 0 4px rgba(220,38,38,0.2);
     display:flex;align-items:center;justify-content:center;
-    font-size:14px;
+    font-size:16px;
   ">🚗</div>`,
   className: '',
-  iconSize: [32, 32],
-  iconAnchor: [16, 16],
+  iconSize: [36, 36],
+  iconAnchor: [18, 18],
 })
 
 export default function MapCard({ position }) {
@@ -29,27 +29,21 @@ export default function MapCard({ position }) {
     return [coords[1], coords[0]]
   }, [coords])
 
-  const headingLabel = heading != null ? getHeadingLabel(heading) : null
-
   return (
-    <div className="bg-slate-800/60 rounded-3xl overflow-hidden">
+    <div className="glass rounded-3xl overflow-hidden">
       <div className="px-4 pt-4 pb-2 flex items-center justify-between">
-        <span className="text-sm font-medium text-slate-300">Dernière position</span>
-        <div className="flex items-center gap-2 text-slate-500">
-          {headingLabel && (
-            <div className="flex items-center gap-1 text-xs">
+        <p className="text-xs text-white/40 font-semibold tracking-widest uppercase">Position</p>
+        <div className="flex items-center gap-3 text-white/30 text-xs">
+          {heading != null && (
+            <div className="flex items-center gap-1">
               <Navigation size={10} />
-              {headingLabel}
+              {getHeadingLabel(heading)}
             </div>
           )}
-          {updatedAt && (
-            <span className="text-xs">
-              {new Date(updatedAt).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })}
-            </span>
-          )}
+          {updatedAt && new Date(updatedAt).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })}
         </div>
       </div>
-      <div className="h-52 overflow-hidden">
+      <div className="h-48 overflow-hidden">
         <MapContainer
           center={center}
           zoom={15}
@@ -57,9 +51,7 @@ export default function MapCard({ position }) {
           zoomControl={false}
           attributionControl={false}
         >
-          <TileLayer
-            url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
-          />
+          <TileLayer url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png" />
           {coords && (
             <Marker position={center} icon={carIcon}>
               <Popup>Ta e-208</Popup>
