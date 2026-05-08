@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from 'react'
+import { apiFetch } from '../api'
 
 const VIN = 'VR3UHZKXZPT583300'
 
@@ -10,9 +11,7 @@ export function useVehicle() {
 
   const fetch_data = useCallback(async () => {
     try {
-      const res = await fetch(`https://api.vbasquin.com/get_vehicleinfo/${VIN}`)
-      if (!res.ok) throw new Error(`HTTP ${res.status}`)
-      const json = await res.json()
+      const json = await apiFetch(`/get_vehicleinfo/${VIN}`)
       setData(json)
       setLastUpdate(new Date())
       setError(null)

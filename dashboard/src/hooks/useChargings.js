@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from 'react'
+import { apiFetch } from '../api'
 
 export function useChargings() {
   const [chargings, setChargings] = useState([])
@@ -6,8 +7,7 @@ export function useChargings() {
 
   const fetch_chargings = useCallback(async () => {
     try {
-      const res = await fetch('https://api.vbasquin.com/vehicles/chargings')
-      const json = await res.json()
+      const json = await apiFetch('/vehicles/chargings')
       setChargings(json.sort((a, b) => new Date(b.start_at) - new Date(a.start_at)))
     } catch {
       setChargings([])
