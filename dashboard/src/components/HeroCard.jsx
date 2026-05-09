@@ -16,7 +16,7 @@ export default function HeroCard({ energy }) {
 
       {/* Car image */}
       <img
-        src="/car.svg"
+        src="/car.png"
         alt="e-208"
         className="absolute -right-4 bottom-0 h-32 object-contain opacity-90 pointer-events-none"
         style={{ filter: 'drop-shadow(0 8px 20px rgba(0,0,0,0.5))' }}
