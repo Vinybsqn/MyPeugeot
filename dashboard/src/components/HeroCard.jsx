@@ -6,7 +6,6 @@ export default function HeroCard({ energy }) {
   const charging = energy?.charging
   const isCharging = charging?.status === 'InProgress'
 
-  const barColor = level > 60 ? '#4ade80' : level > 30 ? '#facc15' : '#f87171'
 
   return (
     <div className="card relative overflow-hidden" style={{ minHeight: 200 }}>
@@ -47,16 +46,11 @@ export default function HeroCard({ energy }) {
             <p className="text-sm" style={{ color: 'rgba(255,255,255,0.4)' }}>{autonomy} km d'autonomie</p>
           </div>
 
-          {/* Battery bar vertical */}
-          <div className="flex flex-col items-center gap-1 mb-1 mr-32">
-            <div className="w-2 h-20 rounded-full overflow-hidden" style={{ background: 'rgba(255,255,255,0.1)' }}>
-              <div className="w-full rounded-full transition-all duration-1000"
-                style={{ height: `${level}%`, background: barColor, marginTop: `${100 - level}%` }} />
+          {charging?.remaining_time && (
+            <div className="card-inner flex items-center gap-1.5 px-3 py-1.5 mb-1">
+              <span className="text-xs font-medium" style={{ color: 'rgba(255,255,255,0.5)' }}>{formatDuration(charging.remaining_time)}</span>
             </div>
-            {charging?.remaining_time && (
-              <span className="text-xs" style={{ color: 'rgba(255,255,255,0.3)' }}>{formatDuration(charging.remaining_time)}</span>
-            )}
-          </div>
+          )}
         </div>
       </div>
     </div>

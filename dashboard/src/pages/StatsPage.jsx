@@ -25,10 +25,9 @@ export default function StatsPage() {
         <Row icon={<Battery size={15} />} color="#c084fc" label="Santé batterie" value={health?.resistance != null ? `${health.resistance}%` : '--'} last />
       </Section>
 
-      {charging && (
+      {charging?.plugged && charging?.status === 'InProgress' && (
         <Section title="Charge en cours">
-          <Row icon={<Zap size={15} />} color="#facc15" label="Statut" value={charging.status === 'InProgress' ? 'En cours' : charging.status ?? '--'} />
-          <Row icon={<Zap size={15} />} color="#60a5fa" label="Mode" value={charging.charging_mode === 'Slow' ? 'Lente (AC)' : 'Rapide (DC)'} />
+          <Row icon={<Zap size={15} />} color="#facc15" label="Mode" value={charging.charging_mode === 'Slow' ? 'Lente (AC)' : 'Rapide (DC)'} />
           <Row icon={<Zap size={15} />} color="#4ade80" label="Vitesse" value={charging.charging_rate ? `+${charging.charging_rate} km/h` : '--'} />
           <Row icon={<Clock size={15} />} color="rgba(255,255,255,0.4)" label="Temps restant" value={charging.remaining_time ? fmt(charging.remaining_time) : '--'} last />
         </Section>

@@ -1,54 +1,32 @@
-import { Zap, Clock, Battery, Activity } from 'lucide-react'
+import { Zap, Clock, Activity } from 'lucide-react'
 
-export default function BatteryCard({ energy, voltage }) {
+export default function BatteryCard({ energy }) {
   const charging = energy?.charging
-  const health = energy?.battery?.health?.resistance
-  if (!charging?.plugged && health == null && !voltage) return null
+  if (!charging?.plugged) return null
 
   return (
     <div className="card p-5 flex flex-col gap-4">
       <p className="text-xs font-semibold tracking-widest uppercase" style={{ color: 'rgba(255,255,255,0.3)' }}>
-        Détails batterie
+        Charge
       </p>
 
-      {charging?.plugged && (
-        <>
-          <Row
-            icon={<Zap size={15} style={{ color: '#facc15' }} />}
-            label={charging.status === 'InProgress' ? 'En charge' : 'Branché'}
-            sub={charging.charging_mode === 'Slow' ? 'Mode lent · AC' : 'Mode rapide · DC'}
-            right={charging.remaining_time
-              ? <div className="flex items-center gap-1.5 card-inner px-2.5 py-1">
-                  <Clock size={11} style={{ color: 'rgba(255,255,255,0.4)' }} />
-                  <span className="text-sm font-semibold text-white">{formatDuration(charging.remaining_time)}</span>
-                </div>
-              : null}
-          />
-          {charging.charging_rate && (
-            <Row
-              icon={<Activity size={15} style={{ color: '#4ade80' }} />}
-              label={`+${charging.charging_rate} km/h`}
-              sub="Vitesse de charge"
-            />
-          )}
-          <div className="card-divider" />
-        </>
-      )}
+      <Row
+        icon={<Zap size={15} style={{ color: '#facc15' }} />}
+        label={charging.status === 'InProgress' ? 'En charge' : 'Branché'}
+        sub={charging.charging_mode === 'Slow' ? 'Mode lent · AC' : 'Mode rapide · DC'}
+        right={charging.remaining_time
+          ? <div className="flex items-center gap-1.5 card-inner px-2.5 py-1">
+              <Clock size={11} style={{ color: 'rgba(255,255,255,0.4)' }} />
+              <span className="text-sm font-semibold text-white">{formatDuration(charging.remaining_time)}</span>
+            </div>
+          : null}
+      />
 
-      {health != null && (
+      {charging.charging_rate && charging.status === 'InProgress' && (
         <Row
-          icon={<Battery size={15} style={{ color: '#60a5fa' }} />}
-          label="Santé batterie"
-          sub="Résistance interne"
-          right={<span className={`text-sm font-bold ${health >= 90 ? 'text-green-400' : health >= 75 ? 'text-yellow-400' : 'text-red-400'}`}>{health}%</span>}
-        />
-      )}
-
-      {voltage != null && (
-        <Row
-          icon={<Zap size={15} style={{ color: 'rgba(255,255,255,0.3)' }} />}
-          label={`${voltage} V`}
-          sub="Tension pack"
+          icon={<Activity size={15} style={{ color: '#4ade80' }} />}
+          label={`+${charging.charging_rate} km/h`}
+          sub="Vitesse de charge"
         />
       )}
     </div>
