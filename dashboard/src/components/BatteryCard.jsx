@@ -1,63 +1,73 @@
-import { Zap, Clock, Battery } from 'lucide-react'
+import { Zap, Clock, Battery, Activity } from 'lucide-react'
 
 export default function BatteryCard({ energy, voltage }) {
   const charging = energy?.charging
   const health = energy?.battery?.health?.resistance
-
-  if (!charging?.plugged && health == null) return null
+  if (!charging?.plugged && health == null && !voltage) return null
 
   return (
-    <div className="glass rounded-3xl p-5 flex flex-col gap-3">
-      <p className="text-xs text-white/40 font-semibold tracking-widest uppercase">Charge</p>
+    <div className="card p-5 flex flex-col gap-4">
+      <p className="text-xs font-semibold tracking-widest uppercase" style={{ color: 'rgba(255,255,255,0.3)' }}>
+        Détails batterie
+      </p>
 
       {charging?.plugged && (
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-2xl flex items-center justify-center" style={{ background: 'rgba(234,179,8,0.15)' }}>
-              <Zap size={18} className="text-yellow-400" />
-            </div>
-            <div>
-              <div className="text-sm font-semibold text-white">
-                {charging.status === 'InProgress' ? 'En charge' : 'Branché'}
-              </div>
-              <div className="text-xs text-white/40">
-                {charging.charging_mode === 'Slow' ? 'Mode lent (AC)' : 'Mode rapide (DC)'}
-                {charging.charging_rate ? ` · +${charging.charging_rate} km/h` : ''}
-              </div>
-            </div>
-          </div>
-          {charging.remaining_time && (
-            <div className="glass-strong rounded-2xl px-3 py-1.5 flex items-center gap-1.5">
-              <Clock size={12} className="text-white/50" />
-              <span className="text-sm font-semibold text-white">{formatDuration(charging.remaining_time)}</span>
-            </div>
+        <>
+          <Row
+            icon={<Zap size={15} style={{ color: '#facc15' }} />}
+            label={charging.status === 'InProgress' ? 'En charge' : 'Branché'}
+            sub={charging.charging_mode === 'Slow' ? 'Mode lent · AC' : 'Mode rapide · DC'}
+            right={charging.remaining_time
+              ? <div className="flex items-center gap-1.5 card-inner px-2.5 py-1">
+                  <Clock size={11} style={{ color: 'rgba(255,255,255,0.4)' }} />
+                  <span className="text-sm font-semibold text-white">{formatDuration(charging.remaining_time)}</span>
+                </div>
+              : null}
+          />
+          {charging.charging_rate && (
+            <Row
+              icon={<Activity size={15} style={{ color: '#4ade80' }} />}
+              label={`+${charging.charging_rate} km/h`}
+              sub="Vitesse de charge"
+            />
           )}
-        </div>
+          <div className="card-divider" />
+        </>
       )}
 
       {health != null && (
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-2xl flex items-center justify-center" style={{ background: 'rgba(59,130,246,0.15)' }}>
-              <Battery size={18} className="text-blue-400" />
-            </div>
-            <div>
-              <div className="text-sm font-semibold text-white">Santé batterie</div>
-              <div className="text-xs text-white/40">Résistance interne</div>
-            </div>
-          </div>
-          <span className={`text-sm font-bold ${health >= 90 ? 'text-green-400' : health >= 75 ? 'text-yellow-400' : 'text-red-400'}`}>
-            {health}%
-          </span>
-        </div>
+        <Row
+          icon={<Battery size={15} style={{ color: '#60a5fa' }} />}
+          label="Santé batterie"
+          sub="Résistance interne"
+          right={<span className={`text-sm font-bold ${health >= 90 ? 'text-green-400' : health >= 75 ? 'text-yellow-400' : 'text-red-400'}`}>{health}%</span>}
+        />
       )}
 
       {voltage != null && (
-        <div className="flex items-center justify-between pt-1 border-t border-white/5">
-          <span className="text-xs text-white/40">Tension</span>
-          <span className="text-xs font-medium text-white/60">{voltage} V</span>
-        </div>
+        <Row
+          icon={<Zap size={15} style={{ color: 'rgba(255,255,255,0.3)' }} />}
+          label={`${voltage} V`}
+          sub="Tension pack"
+        />
       )}
+    </div>
+  )
+}
+
+function Row({ icon, label, sub, right }) {
+  return (
+    <div className="flex items-center justify-between">
+      <div className="flex items-center gap-3">
+        <div className="w-8 h-8 rounded-xl flex items-center justify-center" style={{ background: 'rgba(255,255,255,0.06)' }}>
+          {icon}
+        </div>
+        <div>
+          <div className="text-sm font-medium text-white">{label}</div>
+          {sub && <div className="text-xs mt-0.5" style={{ color: 'rgba(255,255,255,0.35)' }}>{sub}</div>}
+        </div>
+      </div>
+      {right && <div>{right}</div>}
     </div>
   )
 }
@@ -65,7 +75,5 @@ export default function BatteryCard({ energy, voltage }) {
 function formatDuration(iso) {
   const match = iso.match(/PT(?:(\d+)H)?(?:(\d+)M)?/)
   if (!match) return iso
-  const h = match[1] ? `${match[1]}h ` : ''
-  const m = match[2] ? `${match[2]}min` : ''
-  return `${h}${m}`
+  return `${match[1] ? match[1] + 'h ' : ''}${match[2] ? match[2] + 'min' : ''}`
 }

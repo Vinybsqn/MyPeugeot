@@ -1,25 +1,40 @@
 import { Thermometer, Gauge, Mountain, Zap } from 'lucide-react'
 
 export default function StatsRow({ data }) {
-  const temp = data?.environment?.air?.temp
-  const mileage = data?.timed_odometer?.mileage
-  const altitude = data?.last_position?.geometry?.coordinates?.[2]
-  const voltage = data?.battery?.voltage
-
   const stats = [
-    { icon: <Thermometer size={16} className="text-blue-400" />, value: temp != null ? `${temp}°` : '--', label: 'Temp.' },
-    { icon: <Gauge size={16} className="text-purple-400" />, value: mileage != null ? `${Math.round(mileage / 1000 * 10) / 10}k` : '--', label: 'km total' },
-    { icon: <Mountain size={16} className="text-green-400" />, value: altitude != null ? `${Math.round(altitude)}m` : '--', label: 'Altitude' },
-    { icon: <Zap size={16} className="text-yellow-400" />, value: voltage != null ? `${voltage}V` : '--', label: 'Tension' },
+    {
+      icon: <Thermometer size={15} style={{ color: '#60a5fa' }} />,
+      value: data?.environment?.air?.temp != null ? `${data.environment.air.temp}°C` : '--',
+      label: 'Temp.',
+    },
+    {
+      icon: <Gauge size={15} style={{ color: '#c084fc' }} />,
+      value: data?.timed_odometer?.mileage != null
+        ? `${Math.round(data.timed_odometer.mileage).toLocaleString('fr-FR')}`
+        : '--',
+      label: 'km',
+    },
+    {
+      icon: <Mountain size={15} style={{ color: '#4ade80' }} />,
+      value: data?.last_position?.geometry?.coordinates?.[2] != null
+        ? `${Math.round(data.last_position.geometry.coordinates[2])}m`
+        : '--',
+      label: 'Altitude',
+    },
+    {
+      icon: <Zap size={15} style={{ color: '#facc15' }} />,
+      value: data?.battery?.voltage != null ? `${data.battery.voltage}V` : '--',
+      label: 'Tension',
+    },
   ]
 
   return (
     <div className="grid grid-cols-4 gap-2">
       {stats.map((s, i) => (
-        <div key={i} className="glass rounded-2xl p-3 flex flex-col items-center gap-1.5">
+        <div key={i} className="card flex flex-col items-center gap-2 py-4 px-2">
           {s.icon}
-          <div className="text-sm font-bold text-white">{s.value}</div>
-          <div className="text-xs text-white/40">{s.label}</div>
+          <span className="text-sm font-bold text-white">{s.value}</span>
+          <span className="text-xs" style={{ color: 'rgba(255,255,255,0.35)' }}>{s.label}</span>
         </div>
       ))}
     </div>
