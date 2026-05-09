@@ -38,7 +38,7 @@ export default function App() {
               </div>
             ) : (
               <>
-                <HeroCard energy={energy} data={data} />
+                <HeroCard energy={energy} updatedAt={data?.timed_odometer?.updated_at} />
                 <StatsRow data={data} />
                 <BatteryCard energy={energy} voltage={data?.battery?.voltage} />
                 <PreconditionButton currentStatus={data?.preconditionning?.air_conditioning?.status} />
