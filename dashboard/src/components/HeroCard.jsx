@@ -5,7 +5,9 @@ export default function HeroCard({ energy }) {
   const autonomy = energy?.autonomy ?? 0
   const charging = energy?.charging
   const isCharging = charging?.status === 'InProgress'
-  const levelColor = level > 60 ? '#4ade80' : level > 30 ? '#facc15' : '#f87171'
+  const levelColor = !isCharging
+    ? (level <= 20 ? '#f87171' : level <= 30 ? '#facc15' : '#ffffff')
+    : (level > 60 ? '#4ade80' : level > 30 ? '#facc15' : '#f87171')
 
   return (
     <div className="card relative overflow-hidden" style={{ minHeight: 180 }}>
@@ -27,7 +29,7 @@ export default function HeroCard({ energy }) {
         <div className="flex items-center justify-between mb-4">
           <div>
             <p className="text-xs tracking-widest uppercase mb-0.5" style={{ color: 'rgba(255,255,255,0.3)' }}>Peugeot · e-208</p>
-            <h1 className="text-lg font-bold text-white">L'éclair de Vianney ⚡</h1>
+            <h1 className="text-lg font-bold text-white">e-208 de Vianney</h1>
           </div>
           {isCharging && (
             <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-xl" style={{ background: 'rgba(74,222,128,0.15)', border: '1px solid rgba(74,222,128,0.25)' }}>
