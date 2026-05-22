@@ -7,6 +7,7 @@ import MapCard from './components/MapCard'
 import StatusBar from './components/StatusBar'
 import BottomNav from './components/BottomNav'
 import PreconditionButton from './components/PreconditionButton'
+import ChargeScheduleCard from './components/ChargeScheduleCard'
 import TripsPage from './pages/TripsPage'
 import ChargePage from './pages/ChargePage'
 import StatsPage from './pages/StatsPage'
@@ -80,7 +81,8 @@ export default function App() {
                 <HeroCard energy={energy} />
                 <StatsRow data={data} />
                 <BatteryCard energy={energy} voltage={data?.battery?.voltage} />
-                <PreconditionButton currentStatus={data?.preconditionning?.air_conditioning?.status} />
+                <PreconditionButton currentStatus={data?.preconditionning?.air_conditioning?.status} level={energy?.level} isCharging={energy?.charging?.status === 'InProgress'} />
+                <ChargeScheduleCard charging={energy?.charging} />
                 <MapCard position={data?.last_position} />
               </>
             )}

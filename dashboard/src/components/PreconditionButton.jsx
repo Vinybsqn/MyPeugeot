@@ -3,11 +3,12 @@ import { Thermometer, Loader } from 'lucide-react'
 
 const VIN = 'VR3UHZKXZPT583300'
 
-export default function PreconditionButton({ currentStatus }) {
+export default function PreconditionButton({ currentStatus, level, isCharging }) {
   const [loading, setLoading] = useState(false)
   const [localState, setLocalState] = useState(null)
 
   const isActive = localState !== null ? localState : currentStatus === 'Enabled'
+  const disabled = loading || (!isCharging && level != null && level < 50)
 
   async function toggle() {
     setLoading(true)
@@ -20,8 +21,8 @@ export default function PreconditionButton({ currentStatus }) {
   }
 
   return (
-    <button onClick={toggle} disabled={loading} className="card w-full p-5 flex items-center justify-between"
-      style={isActive ? { background: 'rgba(251,146,60,0.12)', borderColor: 'rgba(251,146,60,0.25)' } : {}}>
+    <button onClick={toggle} disabled={disabled} className="card w-full p-5 flex items-center justify-between"
+      style={{ opacity: disabled && !loading ? 0.4 : 1, ...(isActive ? { background: 'rgba(251,146,60,0.12)', borderColor: 'rgba(251,146,60,0.25)' } : {}) }}>
       <div className="flex items-center gap-3">
         <div className="w-10 h-10 rounded-2xl flex items-center justify-center"
           style={{ background: isActive ? 'rgba(251,146,60,0.2)' : 'rgba(255,255,255,0.06)' }}>
@@ -33,7 +34,7 @@ export default function PreconditionButton({ currentStatus }) {
         <div className="text-left">
           <p className="text-sm font-semibold text-white">Préchauffage</p>
           <p className="text-xs mt-0.5" style={{ color: 'rgba(255,255,255,0.35)' }}>
-            {isActive ? 'Actif' : 'Inactif'}
+            {disabled && !loading ? 'Batterie insuffisante' : isActive ? 'Actif' : 'Inactif'}
           </p>
         </div>
       </div>
