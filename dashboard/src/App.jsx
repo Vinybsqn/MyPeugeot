@@ -21,8 +21,8 @@ export default function App() {
 
       {/* Progress bar */}
       {loading && (
-        <div className="fixed top-0 left-0 right-0 z-50 h-0.5" style={{ background: 'rgba(255,255,255,0.08)' }}>
-          <div className="progress-bar h-full" style={{ background: 'linear-gradient(90deg, #ef4444, #f97316)' }} />
+        <div className="fixed top-0 left-0 right-0 z-50" style={{ height: 3 }}>
+          <div className="progress-bar" style={{ height: '100%', background: 'linear-gradient(90deg, #ef4444, #f97316, #facc15)', boxShadow: '0 0 8px rgba(239,68,68,0.8)' }} />
         </div>
       )}
 
