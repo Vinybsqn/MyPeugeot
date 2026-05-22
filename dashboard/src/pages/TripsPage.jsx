@@ -20,7 +20,7 @@ export default function TripsPage() {
     <div className="flex flex-col gap-4">
       <h2 className="text-lg font-bold text-white px-1">Trajets</h2>
 
-      <div className="glass rounded-3xl overflow-hidden">
+      <div className="card overflow-hidden">
         <div className="h-52">
           <MapContainer
             key={trip.id}
@@ -31,12 +31,20 @@ export default function TripsPage() {
             attributionControl={false}
           >
             <TileLayer url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png" />
-            {positions.length > 1 && (
-              <Polyline
-                positions={positions}
-                pathOptions={{ color: '#ef4444', weight: 3.5, opacity: 0.9 }}
-              />
-            )}
+            {trips.map(t => {
+              const pts = t.positions ? t.positions.lat.map((lat, i) => [lat, t.positions.long[i]]) : []
+              const isActive = t.id === trip.id
+              return pts.length > 1 && (
+                <Polyline
+                  key={t.id}
+                  positions={pts}
+                  pathOptions={isActive
+                    ? { color: '#ef4444', weight: 3.5, opacity: 0.95 }
+                    : { color: '#6366f1', weight: 2, opacity: 0.35 }
+                  }
+                />
+              )
+            })}
           </MapContainer>
         </div>
         <div className="px-4 py-3 flex items-center justify-between border-t border-white/5">

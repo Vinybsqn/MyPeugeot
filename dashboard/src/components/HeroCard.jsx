@@ -16,7 +16,7 @@ export default function HeroCard({ energy }) {
         style={{ background: 'radial-gradient(circle, rgba(220,38,38,0.2) 0%, transparent 70%)' }} />
 
       <img src="/car.png" alt="e-208"
-        className="absolute right-0 bottom-0 pointer-events-none"
+        className={`absolute right-0 bottom-0 pointer-events-none${isCharging ? ' car-charging' : ''}`}
         style={{ height: 90, objectFit: 'contain', opacity: 0.95, filter: 'drop-shadow(0 6px 16px rgba(0,0,0,0.6))' }}
         onError={e => e.target.style.display = 'none'}
       />
