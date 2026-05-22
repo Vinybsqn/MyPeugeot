@@ -45,7 +45,7 @@ export default function HeroCard({ energy, updatedAt }) {
           <div className="flex items-center gap-1.5 mt-3">
             <Clock size={10} style={{ color: staleColor(updatedAt) }} />
             <span className="text-xs" style={{ color: staleColor(updatedAt) }}>
-              Données : {timeAgo(updatedAt)}
+              Voiture synchronisée : {timeAgo(updatedAt)}
             </span>
           </div>
         )}
