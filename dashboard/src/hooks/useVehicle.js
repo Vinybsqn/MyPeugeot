@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useRef } from 'react'
 import { apiFetch } from '../api'
 
 const VIN = 'VR3UHZKXZPT583300'
@@ -8,6 +8,8 @@ export function useVehicle() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
   const [lastUpdate, setLastUpdate] = useState(null)
+  const [fresh, setFresh] = useState(false)
+  const freshTimer = useRef(null)
 
   const fetch_data = useCallback(async () => {
     try {
@@ -15,6 +17,9 @@ export function useVehicle() {
       setData(json)
       setLastUpdate(new Date())
       setError(null)
+      setFresh(true)
+      clearTimeout(freshTimer.current)
+      freshTimer.current = setTimeout(() => setFresh(false), 2500)
     } catch (e) {
       setError(e.message)
     } finally {
@@ -35,5 +40,5 @@ export function useVehicle() {
     return () => clearInterval(interval)
   }, [fetch_data])
 
-  return { data, loading, error, lastUpdate, refresh }
+  return { data, loading, error, lastUpdate, fresh, refresh }
 }

@@ -13,11 +13,29 @@ import StatsPage from './pages/StatsPage'
 
 export default function App() {
   const [tab, setTab] = useState('home')
-  const { data, loading, error, lastUpdate, refresh } = useVehicle()
+  const { data, loading, error, lastUpdate, fresh, refresh } = useVehicle()
   const energy = data?.energy?.[0]
 
   return (
     <div className="app-bg max-w-md mx-auto min-h-svh relative">
+
+      {/* Progress bar */}
+      {loading && (
+        <div className="fixed top-0 left-0 right-0 z-50 h-0.5" style={{ background: 'rgba(255,255,255,0.08)' }}>
+          <div className="progress-bar h-full" style={{ background: 'linear-gradient(90deg, #ef4444, #f97316)' }} />
+        </div>
+      )}
+
+      {/* Toast */}
+      {fresh && (
+        <div className="fixed top-14 left-1/2 z-50 toast" style={{ transform: 'translateX(-50%)' }}>
+          <div className="px-4 py-2 rounded-2xl text-xs font-medium text-white/80"
+            style={{ background: 'rgba(30,30,45,0.9)', border: '1px solid rgba(255,255,255,0.12)', backdropFilter: 'blur(20px)', WebkitBackdropFilter: 'blur(20px)' }}>
+            Données reçues
+          </div>
+        </div>
+      )}
+
       <div className="px-4 pt-safe pb-36 flex flex-col gap-4">
 
         {/* Status bar */}
