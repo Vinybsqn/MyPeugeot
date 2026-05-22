@@ -43,10 +43,14 @@ function computeStats(chargings, trips, since, until) {
 
 function getWeekStats(chargings, trips) {
   const now = new Date()
-  const since = new Date(now)
-  since.setDate(now.getDate() - ((now.getDay() + 6) % 7))
-  since.setHours(0, 0, 0, 0)
-  return [{ label: 'Cette semaine', ...computeStats(chargings, trips, since, new Date()) }]
+  const thisStart = new Date(now)
+  thisStart.setDate(now.getDate() - ((now.getDay() + 6) % 7))
+  thisStart.setHours(0, 0, 0, 0)
+  const prevStart = new Date(thisStart)
+  prevStart.setDate(prevStart.getDate() - 7)
+  const current = { label: 'Cette semaine', ...computeStats(chargings, trips, thisStart, now) }
+  const previous = { label: 'Semaine précédente', ...computeStats(chargings, trips, prevStart, thisStart) }
+  return [{ ...current, prev: previous }, previous]
 }
 
 function getMonthStats(chargings, trips) {
@@ -107,13 +111,26 @@ export default function CostPage() {
   )
 }
 
+function Delta({ current, previous }) {
+  if (!previous || previous === 0 || current === 0) return null
+  const pct = Math.round(((current - previous) / previous) * 100)
+  if (pct === 0) return null
+  const up = pct > 0
+  return (
+    <span className="text-xs font-medium ml-2" style={{ color: up ? '#f87171' : '#4ade80' }}>
+      {up ? '↑' : '↓'} {Math.abs(pct)}%
+    </span>
+  )
+}
+
 function StatCard({ stats }) {
   const costPerKm = stats.km > 0 ? stats.costConsumed / stats.km : null
 
   return (
     <div className="card overflow-hidden">
-      <div className="px-5 py-3.5" style={{ borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
+      <div className="px-5 py-3.5 flex items-center justify-between" style={{ borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
         <p className="text-sm font-semibold text-white capitalize">{stats.label}</p>
+        {stats.prev && <span className="text-xs" style={{ color: 'rgba(255,255,255,0.25)' }}>vs sem. préc.</span>}
       </div>
 
       {/* Rechargé */}
@@ -121,7 +138,7 @@ function StatCard({ stats }) {
         <p className="text-xs mb-2.5 font-medium tracking-widest uppercase" style={{ color: 'rgba(255,255,255,0.25)' }}>Rechargé</p>
         <div className="flex justify-between">
           <Stat icon={<Zap size={13} />} color="#facc15" label="Énergie" value={stats.kWhCharged > 0 ? `${stats.kWhCharged.toFixed(1)} kWh` : '--'} />
-          <Stat icon={<Euro size={13} />} color="#4ade80" label="Coût" value={stats.costCharged > 0 ? `${stats.costCharged.toFixed(2)} €` : '--'} />
+          <Stat icon={<Euro size={13} />} color="#4ade80" label="Coût" value={stats.costCharged > 0 ? `${stats.costCharged.toFixed(2)} €` : '--'} delta={stats.prev && <Delta current={stats.costCharged} previous={stats.prev.costCharged} />} />
           <Stat icon={<Battery size={13} />} color="#c084fc" label="Sessions" value={stats.sessions > 0 ? `${stats.sessions}` : '--'} />
         </div>
       </div>
@@ -131,22 +148,25 @@ function StatCard({ stats }) {
         <p className="text-xs mb-2.5 font-medium tracking-widest uppercase" style={{ color: 'rgba(255,255,255,0.25)' }}>Consommé en roulant</p>
         <div className="flex justify-between">
           <Stat icon={<Zap size={13} />} color="#facc15" label="Énergie" value={stats.kWhConsumed > 0 ? `${stats.kWhConsumed.toFixed(1)} kWh` : '--'} />
-          <Stat icon={<Euro size={13} />} color="#4ade80" label="Coût" value={stats.costConsumed > 0 ? `${stats.costConsumed.toFixed(2)} €` : '--'} />
-          <Stat icon={<Navigation size={13} />} color="#60a5fa" label={costPerKm ? `${(costPerKm * 100).toFixed(1)} cts/km` : 'Distance'} value={stats.km > 0 ? `${Math.round(stats.km)} km` : '--'} />
+          <Stat icon={<Euro size={13} />} color="#4ade80" label="Coût" value={stats.costConsumed > 0 ? `${stats.costConsumed.toFixed(2)} €` : '--'} delta={stats.prev && <Delta current={stats.costConsumed} previous={stats.prev.costConsumed} />} />
+          <Stat icon={<Navigation size={13} />} color="#60a5fa" label={costPerKm ? `${(costPerKm * 100).toFixed(1)} cts/km` : 'Distance'} value={stats.km > 0 ? `${Math.round(stats.km)} km` : '--'} delta={stats.prev && <Delta current={stats.km} previous={stats.prev.km} />} />
         </div>
       </div>
     </div>
   )
 }
 
-function Stat({ icon, color, label, value }) {
+function Stat({ icon, color, label, value, delta }) {
   return (
     <div className="flex flex-col gap-1">
       <div className="flex items-center gap-1" style={{ color }}>
         {icon}
         <span className="text-xs" style={{ color: 'rgba(255,255,255,0.35)' }}>{label}</span>
       </div>
-      <span className="text-lg font-bold text-white">{value}</span>
+      <div className="flex items-baseline gap-1">
+        <span className="text-lg font-bold text-white">{value}</span>
+        {delta}
+      </div>
     </div>
   )
 }

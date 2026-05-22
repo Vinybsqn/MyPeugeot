@@ -1,6 +1,6 @@
 import { MapContainer, TileLayer, Marker } from 'react-leaflet'
 import L from 'leaflet'
-import { useMemo } from 'react'
+import { useMemo, useEffect, useState } from 'react'
 import { MapPin } from 'lucide-react'
 
 const carIcon = L.divIcon({
@@ -15,15 +15,30 @@ export default function MapCard({ position }) {
   const updatedAt = position?.properties?.updated_at
   const heading = position?.properties?.heading
   const center = useMemo(() => coords ? [coords[1], coords[0]] : [46.603354, 1.888334], [coords])
+  const [address, setAddress] = useState(null)
+
+  useEffect(() => {
+    if (!coords) return
+    const [lon, lat] = coords
+    fetch(`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json&accept-language=fr`)
+      .then(r => r.json())
+      .then(d => {
+        const a = d.address
+        const street = a.road || a.pedestrian || a.footway || ''
+        const city = a.city || a.town || a.village || a.municipality || ''
+        setAddress([street, city].filter(Boolean).join(', '))
+      })
+      .catch(() => {})
+  }, [coords?.[0], coords?.[1]])
 
   return (
     <div className="card overflow-hidden">
       {/* Header */}
       <div className="flex items-center justify-between px-5 py-3.5" style={{ borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
-        <div className="flex items-center gap-2">
-          <MapPin size={13} style={{ color: '#ef4444' }} />
-          <p className="text-xs font-semibold tracking-widest uppercase" style={{ color: 'rgba(255,255,255,0.3)' }}>
-            Localisation
+        <div className="flex items-center gap-2 min-w-0">
+          <MapPin size={13} style={{ color: '#ef4444', flexShrink: 0 }} />
+          <p className="text-xs font-semibold truncate" style={{ color: 'rgba(255,255,255,0.5)' }}>
+            {address || 'Localisation'}
           </p>
         </div>
         <p className="text-xs" style={{ color: 'rgba(255,255,255,0.25)' }}>
