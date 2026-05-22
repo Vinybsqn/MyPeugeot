@@ -22,11 +22,18 @@ export function useVehicle() {
     }
   }, [])
 
+  const refresh = useCallback(async () => {
+    setLoading(true)
+    try { await apiFetch(`/charge_now/${VIN}/1`) } catch (_) {}
+    await new Promise(r => setTimeout(r, 3000))
+    await fetch_data()
+  }, [fetch_data])
+
   useEffect(() => {
     fetch_data()
-    const interval = setInterval(fetch_data, 60000) // refresh every minute
+    const interval = setInterval(fetch_data, 60000)
     return () => clearInterval(interval)
   }, [fetch_data])
 
-  return { data, loading, error, lastUpdate, refresh: fetch_data }
+  return { data, loading, error, lastUpdate, refresh }
 }
