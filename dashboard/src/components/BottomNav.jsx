@@ -1,4 +1,4 @@
-import { Home, Navigation, Zap, BarChart2 } from 'lucide-react'
+import { Home, Navigation, Zap, BarChart2, Euro } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
 
 const tabs = [
@@ -6,6 +6,7 @@ const tabs = [
   { id: 'stats', label: 'Stats', icon: BarChart2 },
   { id: 'trips', label: 'Trajets', icon: Navigation },
   { id: 'charge', label: 'Recharges', icon: Zap },
+  { id: 'cost', label: 'Coût', icon: Euro },
 ]
 
 export default function BottomNav({ active, onChange }) {
