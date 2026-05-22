@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useVehicle } from './hooks/useVehicle'
 import HeroCard from './components/HeroCard'
 import BatteryCard from './components/BatteryCard'
@@ -15,14 +15,34 @@ export default function App() {
   const [tab, setTab] = useState('home')
   const { data, loading, error, lastUpdate, fresh, refresh } = useVehicle()
   const energy = data?.energy?.[0]
+  const [barWidth, setBarWidth] = useState(0)
+  const barTimer = useRef(null)
+
+  useEffect(() => {
+    if (loading) {
+      setBarWidth(0)
+      clearTimeout(barTimer.current)
+      requestAnimationFrame(() => setBarWidth(80))
+    } else {
+      setBarWidth(100)
+      barTimer.current = setTimeout(() => setBarWidth(0), 400)
+    }
+    return () => clearTimeout(barTimer.current)
+  }, [loading])
 
   return (
     <div className="app-bg max-w-md mx-auto min-h-svh relative">
 
       {/* Progress bar */}
-      {loading && (
+      {barWidth > 0 && (
         <div className="fixed top-0 left-0 right-0 z-50" style={{ height: 3 }}>
-          <div className="progress-bar" style={{ height: '100%', background: 'linear-gradient(90deg, #ef4444, #f97316, #facc15)', boxShadow: '0 0 8px rgba(239,68,68,0.8)' }} />
+          <div style={{
+            height: '100%',
+            width: `${barWidth}%`,
+            background: 'linear-gradient(90deg, #ef4444, #f97316, #facc15)',
+            boxShadow: '0 0 8px rgba(239,68,68,0.8)',
+            transition: loading ? 'width 3s ease-out' : 'width 0.3s ease-in',
+          }} />
         </div>
       )}
 
