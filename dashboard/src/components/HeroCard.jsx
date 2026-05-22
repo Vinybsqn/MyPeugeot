@@ -1,6 +1,7 @@
 import { Clock } from 'lucide-react'
 
-export default function HeroCard({ energy, updatedAt }) {
+export default function HeroCard({ energy }) {
+  const updatedAt = energy?.updated_at
   const level = energy?.level ?? 0
   const autonomy = energy?.autonomy ?? 0
   const charging = energy?.charging
