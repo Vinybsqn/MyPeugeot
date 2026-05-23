@@ -1,6 +1,6 @@
 export async function onRequest(context) {
   const url = new URL(context.request.url)
-  const targetUrl = `https://api.vbasquin.com${url.pathname.replace('/proxy', '')}${url.search}`
+  const targetUrl = `${context.env.API_URL}${url.pathname.replace('/proxy', '')}${url.search}`
 
   const response = await fetch(targetUrl, {
     method: context.request.method,
