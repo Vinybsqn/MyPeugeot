@@ -159,8 +159,11 @@ npm run dev
    - **Build output directory** : `dist`
    - **Root directory** : `dashboard`
 4. Dans **Settings → Environment variables**, ajoute :
-   - `VITE_API_URL` → `https://api.ton-domaine.com`
+   - `VITE_API_URL` → `https://api.ton-domaine.com` ← pour le build Vite
+   - `API_URL` → `https://api.ton-domaine.com` ← pour le proxy Cloudflare Functions
    - `VITE_VIN` → `ton_vin`
+   - `CF_CLIENT_ID` → ton Cloudflare Access client ID (si tu utilises Cloudflare Access pour protéger l'API)
+   - `CF_CLIENT_SECRET` → ton Cloudflare Access client secret (idem)
 5. Déploie — ton dashboard sera dispo sur `ton-projet.pages.dev`
 
 ---
