@@ -70,7 +70,7 @@ export default function CostPage() {
 
   if (lc || lt) return (
     <div className="flex items-center justify-center py-32">
-      <p className="text-sm animate-pulse" style={{ color: 'rgba(255,255,255,0.3)' }}>Chargement...</p>
+      <p className="text-sm animate-pulse" style={{ color: 'var(--t3)' }}>Chargement...</p>
     </div>
   )
 
@@ -79,14 +79,14 @@ export default function CostPage() {
   return (
     <div className="flex flex-col gap-4">
       <div className="flex items-center justify-between px-1">
-        <h2 className="text-xl font-bold text-white">Coût</h2>
-        <div className="flex gap-1 p-1 rounded-2xl" style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.08)' }}>
+        <h2 className="text-xl font-bold" style={{ color: 'var(--t1)' }}>Coût</h2>
+        <div className="flex gap-1 p-1 rounded-2xl" style={{ background: 'var(--card-inner)', border: '1px solid var(--card-inner-border)' }}>
           {['week', 'month'].map(p => (
             <button key={p} onClick={() => setPeriod(p)}
               className="px-3 py-1.5 rounded-xl text-xs font-medium transition-all"
               style={period === p
-                ? { background: 'rgba(255,255,255,0.15)', color: '#fff' }
-                : { color: 'rgba(255,255,255,0.35)' }}>
+                ? { background: 'var(--card)', color: 'var(--t1)', boxShadow: 'var(--card-shadow)' }
+                : { color: 'var(--t3)' }}>
               {p === 'week' ? 'Semaine' : 'Mensuel'}
             </button>
           ))}
@@ -96,7 +96,9 @@ export default function CostPage() {
       {periods.length === 0 ? (
         <div className="flex flex-col items-center justify-center py-24 gap-3">
           <div className="text-5xl">💶</div>
-          <div className="text-white/30 text-sm text-center leading-relaxed">Aucune donnée encore.{'\n'}Les stats apparaîtront après tes premiers trajets et recharges.</div>
+          <div className="text-sm text-center leading-relaxed" style={{ color: 'var(--t3)' }}>
+            Aucune donnée encore.{'\n'}Les stats apparaîtront après tes premiers trajets.
+          </div>
         </div>
       ) : (
         <div className="flex flex-col gap-3">
@@ -104,8 +106,8 @@ export default function CostPage() {
         </div>
       )}
 
-      <div className="px-1 text-xs" style={{ color: 'rgba(255,255,255,0.2)' }}>
-        Tarifs : {RATE_DAY}€/kWh (8h-23h) · {RATE_NIGHT}€/kWh (23h-8h) · {RATE_AVG}€/kWh moy. consommation
+      <div className="px-1 text-xs" style={{ color: 'var(--t3)' }}>
+        {RATE_DAY}€/kWh · 8h-23h · {RATE_NIGHT}€/kWh · 23h-8h · {RATE_AVG}€/kWh moy. consommation
       </div>
     </div>
   )
@@ -117,8 +119,8 @@ function Delta({ current, previous }) {
   if (pct === 0) return null
   const up = pct > 0
   return (
-    <span className="text-xs font-medium ml-2" style={{ color: up ? '#f87171' : '#4ade80' }}>
-      {up ? '↑' : '↓'} {Math.abs(pct)}%
+    <span className="text-xs font-medium ml-1.5" style={{ color: up ? '#ef4444' : '#22c55e' }}>
+      {up ? '↑' : '↓'}{Math.abs(pct)}%
     </span>
   )
 }
@@ -128,43 +130,46 @@ function StatCard({ stats }) {
 
   return (
     <div className="card overflow-hidden">
-      <div className="px-5 py-3.5 flex items-center justify-between" style={{ borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
-        <p className="text-sm font-semibold text-white capitalize">{stats.label}</p>
-        {stats.prev && <span className="text-xs" style={{ color: 'rgba(255,255,255,0.25)' }}>vs sem. préc.</span>}
+      <div className="px-5 py-3.5 flex items-center justify-between sep">
+        <p className="text-sm font-semibold capitalize" style={{ color: 'var(--t1)' }}>{stats.label}</p>
+        {stats.prev && <span className="text-xs" style={{ color: 'var(--t3)' }}>vs sem. préc.</span>}
       </div>
 
-      {/* Rechargé */}
-      <div className="px-5 py-3" style={{ borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
-        <p className="text-xs mb-2.5 font-medium tracking-widest uppercase" style={{ color: 'rgba(255,255,255,0.25)' }}>Rechargé</p>
+      <div className="px-5 py-3.5" style={{ borderBottom: '1px solid var(--sep)' }}>
+        <p className="text-xs mb-3 font-medium tracking-widest uppercase" style={{ color: 'var(--t3)' }}>Rechargé</p>
         <div className="flex justify-between">
-          <Stat icon={<Zap size={13} />} color="#facc15" label="Énergie" value={stats.kWhCharged > 0 ? `${stats.kWhCharged.toFixed(1)} kWh` : '--'} />
-          <Stat icon={<Euro size={13} />} color="#4ade80" label="Coût" value={stats.costCharged > 0 ? `${stats.costCharged.toFixed(2)} €` : '--'} delta={stats.prev && <Delta current={stats.costCharged} previous={stats.prev.costCharged} />} />
-          <Stat icon={<Battery size={13} />} color="#c084fc" label="Sessions" value={stats.sessions > 0 ? `${stats.sessions}` : '--'} />
+          <Stat icon={<Zap size={13} />} label="Énergie" value={stats.kWhCharged > 0 ? `${stats.kWhCharged.toFixed(1)} kWh` : '--'} />
+          <Stat icon={<Euro size={13} />} label="Coût" value={stats.costCharged > 0 ? `${stats.costCharged.toFixed(2)} €` : '--'}
+            delta={stats.prev && <Delta current={stats.costCharged} previous={stats.prev.costCharged} />} />
+          <Stat icon={<Battery size={13} />} label="Sessions" value={stats.sessions > 0 ? `${stats.sessions}` : '--'} />
         </div>
       </div>
 
-      {/* Consommé */}
-      <div className="px-5 py-3">
-        <p className="text-xs mb-2.5 font-medium tracking-widest uppercase" style={{ color: 'rgba(255,255,255,0.25)' }}>Consommé en roulant</p>
+      <div className="px-5 py-3.5">
+        <p className="text-xs mb-3 font-medium tracking-widest uppercase" style={{ color: 'var(--t3)' }}>Consommé en roulant</p>
         <div className="flex justify-between">
-          <Stat icon={<Zap size={13} />} color="#facc15" label="Énergie" value={stats.kWhConsumed > 0 ? `${stats.kWhConsumed.toFixed(1)} kWh` : '--'} />
-          <Stat icon={<Euro size={13} />} color="#4ade80" label="Coût" value={stats.costConsumed > 0 ? `${stats.costConsumed.toFixed(2)} €` : '--'} delta={stats.prev && <Delta current={stats.costConsumed} previous={stats.prev.costConsumed} />} />
-          <Stat icon={<Navigation size={13} />} color="#60a5fa" label={costPerKm ? `${(costPerKm * 100).toFixed(1)} cts/km` : 'Distance'} value={stats.km > 0 ? `${Math.round(stats.km)} km` : '--'} delta={stats.prev && <Delta current={stats.km} previous={stats.prev.km} />} />
+          <Stat icon={<Zap size={13} />} label="Énergie" value={stats.kWhConsumed > 0 ? `${stats.kWhConsumed.toFixed(1)} kWh` : '--'} />
+          <Stat icon={<Euro size={13} />} label="Coût" value={stats.costConsumed > 0 ? `${stats.costConsumed.toFixed(2)} €` : '--'}
+            delta={stats.prev && <Delta current={stats.costConsumed} previous={stats.prev.costConsumed} />} />
+          <Stat icon={<Navigation size={13} />}
+            label={costPerKm ? `${(costPerKm * 100).toFixed(1)} cts/km` : 'Distance'}
+            value={stats.km > 0 ? `${Math.round(stats.km)} km` : '--'}
+            delta={stats.prev && <Delta current={stats.km} previous={stats.prev.km} />} />
         </div>
       </div>
     </div>
   )
 }
 
-function Stat({ icon, color, label, value, delta }) {
+function Stat({ icon, label, value, delta }) {
   return (
     <div className="flex flex-col gap-1">
-      <div className="flex items-center gap-1" style={{ color }}>
+      <div className="flex items-center gap-1" style={{ color: 'var(--t2)' }}>
         {icon}
-        <span className="text-xs" style={{ color: 'rgba(255,255,255,0.35)' }}>{label}</span>
+        <span className="text-xs" style={{ color: 'var(--t3)' }}>{label}</span>
       </div>
       <div className="flex items-baseline gap-1">
-        <span className="text-lg font-bold text-white">{value}</span>
+        <span className="text-lg font-bold" style={{ color: 'var(--t1)' }}>{value}</span>
         {delta}
       </div>
     </div>

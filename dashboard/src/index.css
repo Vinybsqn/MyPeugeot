@@ -1,6 +1,47 @@
 @import "tailwindcss";
 @import "leaflet/dist/leaflet.css";
 
+/* ─── Design tokens ───────────────────────────────────────────── */
+:root {
+  /* Dark theme — default (nuit) */
+  --bg:               #000000;
+  --card:             rgba(28,28,30,0.75);
+  --card-border:      rgba(255,255,255,0.10);
+  --card-shadow:      none;
+  --card-inner:       rgba(255,255,255,0.07);
+  --card-inner-border:rgba(255,255,255,0.08);
+  --t1:               #ffffff;
+  --t2:               rgba(255,255,255,0.45);
+  --t3:               rgba(255,255,255,0.22);
+  --sep:              rgba(255,255,255,0.07);
+  --nav-bg:           rgba(20,20,24,0.08);
+  --nav-border:       rgba(255,255,255,0.14);
+  --nav-active:       rgba(255,255,255,0.10);
+  --nav-active-border:rgba(255,255,255,0.16);
+  --toggle-off:       rgba(255,255,255,0.12);
+  --car-shadow:       drop-shadow(0 6px 20px rgba(0,0,0,0.65));
+}
+
+[data-theme="light"] {
+  --bg:               #ffffff;
+  --card:             linear-gradient(160deg, rgba(255,255,255,0.18) 0%, rgba(0,0,0,0.02) 100%);
+  --card-border:      rgba(0,0,0,0.07);
+  --card-shadow:      inset 0 1px 0 rgba(255,255,255,0.95), inset 0 -1px 0 rgba(0,0,0,0.06), 0 4px 24px rgba(0,0,0,0.07), 0 1px 3px rgba(0,0,0,0.05);
+  --card-inner:       rgba(0,0,0,0.03);
+  --card-inner-border:rgba(0,0,0,0.06);
+  --t1:               #000000;
+  --t2:               rgba(0,0,0,0.50);
+  --t3:               rgba(0,0,0,0.30);
+  --sep:              rgba(0,0,0,0.06);
+  --nav-bg:           rgba(255,255,255,0.06);
+  --nav-border:       rgba(0,0,0,0.08);
+  --nav-active:       rgba(255,45,85,0.10);
+  --nav-active-border:rgba(255,45,85,0.20);
+  --toggle-off:       rgba(0,0,0,0.10);
+  --car-shadow:       drop-shadow(0 6px 20px rgba(0,0,0,0.15));
+}
+
+/* ─── Base ────────────────────────────────────────────────────── */
 * {
   -webkit-tap-highlight-color: transparent;
   box-sizing: border-box;
@@ -8,79 +49,84 @@
 
 body {
   margin: 0;
-  background: #0c0c14;
-  color: #ffffff;
+  background: var(--bg);
+  color: var(--t1);
   font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', sans-serif;
   -webkit-font-smoothing: antialiased;
+  transition: background 0.6s ease, color 0.3s ease;
 }
 
 #root { min-height: 100svh; }
 
+/* ─── App background ──────────────────────────────────────────── */
 .app-bg {
-  background:
-    radial-gradient(ellipse 80% 40% at 20% 0%, rgba(200,30,30,0.18) 0%, transparent 60%),
-    radial-gradient(ellipse 60% 40% at 80% 100%, rgba(50,80,200,0.12) 0%, transparent 60%),
-    #0c0c14;
+  background: var(--bg);
+  min-height: 100svh;
+  transition: background 0.6s ease;
 }
 
-/* The ONE card style used everywhere */
+[data-theme="light"] .app-bg {
+  background:
+    radial-gradient(ellipse at 30% 0%, rgba(255,45,85,0.35) 0%, transparent 60%),
+    radial-gradient(ellipse at 80% 90%, rgba(255,45,85,0.20) 0%, transparent 50%),
+    #ffffff;
+}
+
+[data-theme="light"] .card {
+  background: linear-gradient(175deg, rgba(255,255,255,0.45) 0%, rgba(225,225,235,0.15) 100%);
+  box-shadow:
+    inset 0 2px 0 rgba(255,255,255,1),
+    inset 0 -2px 0 rgba(0,0,0,0.10),
+    inset 2px 0 0 rgba(255,255,255,0.90),
+    inset -2px 0 0 rgba(0,0,0,0.07),
+    0 8px 32px rgba(0,0,0,0.12),
+    0 2px 6px rgba(0,0,0,0.07);
+}
+
+/* ─── Card ────────────────────────────────────────────────────── */
 .card {
-  background: rgba(255,255,255,0.06);
-  backdrop-filter: blur(30px) saturate(160%);
-  -webkit-backdrop-filter: blur(30px) saturate(160%);
-  border: 1px solid rgba(255,255,255,0.1);
-  border-radius: 24px;
+  background: var(--card);
+  backdrop-filter: blur(100px) saturate(180%);
+  -webkit-backdrop-filter: blur(100px) saturate(180%);
+  border: 1px solid var(--card-border);
+  border-radius: 22px;
+  box-shadow: var(--card-shadow);
+  transition: background 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
 .card-inner {
-  background: rgba(255,255,255,0.04);
-  border: 1px solid rgba(255,255,255,0.07);
-  border-radius: 16px;
+  background: var(--card-inner);
+  border: 1px solid var(--card-inner-border);
+  border-radius: 14px;
 }
 
-.nav-bar {
-  background: rgba(12,12,20,0.85);
-  backdrop-filter: blur(40px);
-  -webkit-backdrop-filter: blur(40px);
-  border-top: 1px solid rgba(255,255,255,0.07);
-}
-
+/* ─── Safe area ───────────────────────────────────────────────── */
 .pt-safe { padding-top: env(safe-area-inset-top, 52px); }
 .pb-safe { padding-bottom: env(safe-area-inset-bottom, 20px); }
 
-/* Divider inside cards */
-.card-divider { border-top: 1px solid rgba(255,255,255,0.06); }
-
-/* Active state */
-button:active { opacity: 0.8; transform: scale(0.98); }
+/* ─── Buttons ─────────────────────────────────────────────────── */
+button:active { opacity: 0.75; transform: scale(0.97); }
 button { transition: all 0.15s ease; }
 
-/* Charging car glow pulse */
+/* ─── Charge glow (fonctionnel — vert) ───────────────────────── */
 @keyframes chargeGlow {
-  0%, 100% { filter: drop-shadow(0 6px 16px rgba(0,0,0,0.6)) drop-shadow(0 0 0px rgba(74,222,128,0)); }
-  50% { filter: drop-shadow(0 6px 16px rgba(0,0,0,0.6)) drop-shadow(0 0 18px rgba(74,222,128,0.7)); }
+  0%, 100% { filter: var(--car-shadow) drop-shadow(0 0 0px rgba(74,222,128,0)); }
+  50%       { filter: var(--car-shadow) drop-shadow(0 0 20px rgba(74,222,128,0.65)); }
 }
-.car-charging {
-  animation: chargeGlow 2s ease-in-out infinite;
-}
+.car-charging { animation: chargeGlow 2s ease-in-out infinite; }
+.car-normal   { filter: var(--car-shadow); }
 
-/* Progress bar */
-@keyframes progress {
-  0% { width: 0%; opacity: 1; }
-  80% { width: 85%; opacity: 1; }
-  100% { width: 100%; opacity: 0; }
-}
-.progress-bar {
-  animation: progress 3s ease-out forwards;
-}
+/* ─── Progress bar ────────────────────────────────────────────── */
+.progress-bar { transition: width 3s ease-out; }
 
-/* Toast */
+/* ─── Toast ───────────────────────────────────────────────────── */
 @keyframes toast-in-out {
-  0% { opacity: 0; transform: translateY(8px); }
-  15% { opacity: 1; transform: translateY(0); }
-  70% { opacity: 1; transform: translateY(0); }
-  100% { opacity: 0; transform: translateY(-4px); }
+  0%   { opacity: 0; transform: translateX(-50%) translateY(6px); }
+  15%  { opacity: 1; transform: translateX(-50%) translateY(0); }
+  75%  { opacity: 1; transform: translateX(-50%) translateY(0); }
+  100% { opacity: 0; transform: translateX(-50%) translateY(-4px); }
 }
-.toast {
-  animation: toast-in-out 2.5s ease forwards;
-}
+.toast { animation: toast-in-out 2.5s ease forwards; }
+
+/* ─── Separator ───────────────────────────────────────────────── */
+.sep { border-top: 1px solid var(--sep); }

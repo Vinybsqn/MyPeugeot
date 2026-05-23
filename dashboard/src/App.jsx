@@ -13,12 +13,24 @@ import ChargePage from './pages/ChargePage'
 import StatsPage from './pages/StatsPage'
 import CostPage from './pages/CostPage'
 
+function getSystemTheme() {
+  return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
+}
+
 export default function App() {
   const [tab, setTab] = useState('home')
+  const [theme, setTheme] = useState(getSystemTheme)
   const { data, loading, error, lastUpdate, fresh, refresh } = useVehicle()
   const energy = data?.energy?.[0]
   const [barWidth, setBarWidth] = useState(0)
   const barTimer = useRef(null)
+
+  useEffect(() => {
+    const mq = window.matchMedia('(prefers-color-scheme: dark)')
+    const handler = (e) => setTheme(e.matches ? 'dark' : 'light')
+    mq.addEventListener('change', handler)
+    return () => mq.removeEventListener('change', handler)
+  }, [])
 
   useEffect(() => {
     if (loading) {
@@ -33,7 +45,7 @@ export default function App() {
   }, [loading])
 
   return (
-    <div className="app-bg max-w-md mx-auto min-h-svh relative">
+    <div data-theme={theme} className="app-bg max-w-md mx-auto min-h-svh relative">
 
       {/* Progress bar */}
       {barWidth > 0 && (
@@ -41,8 +53,7 @@ export default function App() {
           <div style={{
             height: '100%',
             width: `${barWidth}%`,
-            background: 'linear-gradient(90deg, #ef4444, #f97316, #facc15)',
-            boxShadow: '0 0 8px rgba(239,68,68,0.8)',
+            background: 'linear-gradient(90deg, #ef4444, #f97316)',
             transition: loading ? 'width 3s ease-out' : 'width 0.3s ease-in',
           }} />
         </div>
@@ -50,9 +61,16 @@ export default function App() {
 
       {/* Toast */}
       {fresh && (
-        <div className="fixed top-14 left-1/2 z-50 toast" style={{ transform: 'translateX(-50%)' }}>
-          <div className="px-4 py-2 rounded-2xl text-xs font-medium text-white/80"
-            style={{ background: 'rgba(30,30,45,0.9)', border: '1px solid rgba(255,255,255,0.12)', backdropFilter: 'blur(20px)', WebkitBackdropFilter: 'blur(20px)' }}>
+        <div className="fixed top-14 left-1/2 z-50 toast">
+          <div className="px-4 py-2 rounded-2xl text-xs font-medium"
+            style={{
+              background: 'var(--card)',
+              border: '1px solid var(--card-border)',
+              backdropFilter: 'blur(30px)',
+              WebkitBackdropFilter: 'blur(30px)',
+              color: 'var(--t1)',
+              boxShadow: 'var(--card-shadow)',
+            }}>
             Données reçues
           </div>
         </div>
@@ -60,19 +78,18 @@ export default function App() {
 
       <div className="px-4 pt-safe pb-36 flex flex-col gap-4">
 
-        {/* Status bar */}
         <StatusBar lastUpdate={lastUpdate} loading={loading} error={error} onRefresh={refresh} />
 
         {tab === 'home' && (
           <>
             {loading && !data ? (
               <div className="flex items-center justify-center py-32">
-                <div className="text-white/30 text-sm animate-pulse">Connexion en cours...</div>
+                <div className="text-sm animate-pulse" style={{ color: 'var(--t3)' }}>Connexion en cours...</div>
               </div>
             ) : error && !data ? (
               <div className="flex flex-col items-center justify-center py-32 gap-4">
-                <div className="text-red-400/80 text-sm">Serveur inaccessible</div>
-                <button onClick={refresh} className="glass rounded-2xl px-5 py-2.5 text-sm text-white">
+                <div className="text-sm" style={{ color: '#f87171' }}>Serveur inaccessible</div>
+                <button onClick={refresh} className="card px-5 py-2.5 text-sm" style={{ color: 'var(--t1)' }}>
                   Réessayer
                 </button>
               </div>
@@ -80,7 +97,7 @@ export default function App() {
               <>
                 <HeroCard energy={energy} />
                 <StatsRow data={data} />
-                <BatteryCard energy={energy} voltage={data?.battery?.voltage} />
+                <BatteryCard energy={energy} />
                 <PreconditionButton currentStatus={data?.preconditionning?.air_conditioning?.status} level={energy?.level} isCharging={energy?.charging?.status === 'InProgress'} />
                 <ChargeScheduleCard charging={energy?.charging} />
                 <MapCard position={data?.last_position} />

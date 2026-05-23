@@ -4,10 +4,10 @@ import { useMemo, useEffect, useState } from 'react'
 import { MapPin } from 'lucide-react'
 
 const carIcon = L.divIcon({
-  html: `<div style="width:28px;height:28px;background:linear-gradient(135deg,#ef4444,#991b1b);border:2px solid rgba(255,255,255,0.9);border-radius:50%;box-shadow:0 2px 12px rgba(220,38,38,0.6),0 0 0 5px rgba(220,38,38,0.15);display:flex;align-items:center;justify-content:center;font-size:12px;">🚗</div>`,
+  html: `<div style="width:26px;height:26px;background:#ef4444;border:2px solid rgba(255,255,255,0.95);border-radius:50%;box-shadow:0 2px 10px rgba(220,38,38,0.5),0 0 0 4px rgba(220,38,38,0.12);"></div>`,
   className: '',
-  iconSize: [28, 28],
-  iconAnchor: [14, 14],
+  iconSize: [26, 26],
+  iconAnchor: [13, 13],
 })
 
 export default function MapCard({ position }) {
@@ -33,21 +33,19 @@ export default function MapCard({ position }) {
 
   return (
     <div className="card overflow-hidden">
-      {/* Header */}
-      <div className="flex items-center justify-between px-5 py-3.5" style={{ borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
+      <div className="flex items-center justify-between px-5 py-3.5 sep">
         <div className="flex items-center gap-2 min-w-0">
           <MapPin size={13} style={{ color: '#ef4444', flexShrink: 0 }} />
-          <p className="text-xs font-semibold truncate" style={{ color: 'rgba(255,255,255,0.5)' }}>
+          <p className="text-xs font-medium truncate" style={{ color: 'var(--t2)' }}>
             {address || 'Localisation'}
           </p>
         </div>
-        <p className="text-xs" style={{ color: 'rgba(255,255,255,0.25)' }}>
+        <p className="text-xs ml-2 flex-shrink-0" style={{ color: 'var(--t3)' }}>
           {heading != null && `${getHeadingLabel(heading)} · `}
           {updatedAt && new Date(updatedAt).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })}
         </p>
       </div>
 
-      {/* Map — style clair type Apple Plans */}
       <div style={{ height: 200 }}>
         <MapContainer
           center={center}
@@ -56,9 +54,7 @@ export default function MapCard({ position }) {
           zoomControl={false}
           attributionControl={false}
         >
-          <TileLayer
-            url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png"
-          />
+          <TileLayer url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png" />
           {coords && <Marker position={center} icon={carIcon} />}
         </MapContainer>
       </div>

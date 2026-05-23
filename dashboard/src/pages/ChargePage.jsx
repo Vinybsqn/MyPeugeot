@@ -15,35 +15,35 @@ export default function ChargePage() {
 
   return (
     <div className="flex flex-col gap-4">
-      <h2 className="text-lg font-bold text-white px-1">Recharges</h2>
+      <h2 className="text-xl font-bold px-1" style={{ color: 'var(--t1)' }}>Recharges</h2>
 
-      <div className="glass rounded-3xl p-5">
+      <div className="card p-5">
         <div className="flex items-center justify-between mb-4">
           <div>
-            <div className="text-sm font-semibold text-white">{formatDate(charge.start_at)}</div>
-            <div className="text-xs text-white/40">
+            <div className="text-sm font-semibold" style={{ color: 'var(--t1)' }}>{formatDate(charge.start_at)}</div>
+            <div className="text-xs mt-0.5" style={{ color: 'var(--t3)' }}>
               {charge.start_level}% → {charge.end_level}%
               {charge.kw && ` · ${charge.kw?.toFixed(1)} kWh`}
             </div>
           </div>
-          <div className={`glass rounded-2xl px-3 py-1.5 text-xs font-semibold ${
-            charge.charging_mode === 'fast' ? 'text-purple-300' : 'text-blue-300'
-          }`}>
-            {charge.charging_mode === 'fast' ? '⚡ Rapide' : '🔌 Lente'}
+          <div className="card-inner px-3 py-1.5">
+            <span className="text-xs font-semibold" style={{ color: 'var(--t2)' }}>
+              {charge.charging_mode === 'fast' ? 'Rapide' : 'Lente'}
+            </span>
           </div>
         </div>
 
         <ResponsiveContainer width="100%" height={160}>
           <LineChart data={curveData} margin={{ top: 4, right: 4, bottom: 0, left: -24 }}>
-            <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" />
-            <XAxis dataKey="time" tick={{ fill: 'rgba(255,255,255,0.25)', fontSize: 10 }} tickLine={false} axisLine={false} />
-            <YAxis domain={[0, 100]} tick={{ fill: 'rgba(255,255,255,0.25)', fontSize: 10 }} tickLine={false} axisLine={false} />
+            <CartesianGrid strokeDasharray="3 3" stroke="var(--sep)" />
+            <XAxis dataKey="time" tick={{ fill: 'var(--t3)', fontSize: 10 }} tickLine={false} axisLine={false} />
+            <YAxis domain={[0, 100]} tick={{ fill: 'var(--t3)', fontSize: 10 }} tickLine={false} axisLine={false} />
             <Tooltip
               contentStyle={{
-                background: 'rgba(15,15,30,0.9)',
-                border: '1px solid rgba(255,255,255,0.1)',
-                borderRadius: 16,
-                color: '#f1f5f9',
+                background: 'var(--card)',
+                border: '1px solid var(--card-border)',
+                borderRadius: 14,
+                color: 'var(--t1)',
                 fontSize: 12,
                 backdropFilter: 'blur(20px)',
               }}
@@ -61,22 +61,22 @@ export default function ChargePage() {
             <button
               key={i}
               onClick={() => setSelected(c)}
-              className="w-full text-left glass rounded-2xl px-4 py-3.5 flex items-center gap-3 transition-all"
-              style={isSelected ? { background: 'rgba(34,197,94,0.1)', borderColor: 'rgba(34,197,94,0.3)' } : {}}
+              className="w-full text-left card px-4 py-3.5 flex items-center gap-3 transition-all"
+              style={isSelected ? { background: 'rgba(34,197,94,0.07)', borderColor: 'rgba(34,197,94,0.2)' } : {}}
             >
-              <div className="w-9 h-9 rounded-2xl flex items-center justify-center" style={{ background: 'rgba(34,197,94,0.15)' }}>
-                <Zap size={16} className="text-green-400" />
+              <div className="w-9 h-9 rounded-2xl flex items-center justify-center" style={{ background: 'var(--card-inner)' }}>
+                <Zap size={16} style={{ color: 'var(--t2)' }} />
               </div>
               <div className="flex-1 min-w-0">
-                <div className="text-sm font-medium text-white">{formatDate(c.start_at)}</div>
-                <div className="text-xs text-white/40 flex items-center gap-2 mt-0.5">
+                <div className="text-sm font-medium" style={{ color: 'var(--t1)' }}>{formatDate(c.start_at)}</div>
+                <div className="text-xs flex items-center gap-2 mt-0.5" style={{ color: 'var(--t3)' }}>
                   <Battery size={10} />
                   <span>{c.start_level}% → {c.end_level}%</span>
                   {c.kw && <><span>·</span><span>{c.kw?.toFixed(1)} kWh</span></>}
                 </div>
               </div>
               {c.stop_at && (
-                <div className="text-xs text-white/30 flex items-center gap-1 flex-shrink-0">
+                <div className="text-xs flex items-center gap-1 flex-shrink-0" style={{ color: 'var(--t3)' }}>
                   <Clock size={10} />
                   {formatChargeDuration(c.start_at, c.stop_at)}
                 </div>
@@ -109,7 +109,7 @@ function EmptyState({ loading }) {
   return (
     <div className="flex flex-col items-center justify-center py-32 gap-3">
       <div className="text-5xl">⚡</div>
-      <div className="text-white/30 text-sm text-center leading-relaxed">
+      <div className="text-sm text-center leading-relaxed" style={{ color: 'var(--t3)' }}>
         {loading ? 'Chargement...' : 'Aucune recharge enregistrée.\nBranche ta voiture et reviens !'}
       </div>
     </div>
