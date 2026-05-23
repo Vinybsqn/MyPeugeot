@@ -1,8 +1,6 @@
 import { useState } from 'react'
 import { Clock, Loader, Zap } from 'lucide-react'
-
-const VIN = 'VR3UHZKXZPT583300'
-const BASE = 'https://api.vbasquin.com'
+import { BASE, VIN } from '../api'
 
 function parseTime(iso) {
   if (!iso) return { hour: 8, minute: 0 }

@@ -1,7 +1,5 @@
 import { useState, useEffect, useCallback, useRef } from 'react'
-import { apiFetch } from '../api'
-
-const VIN = 'VR3UHZKXZPT583300'
+import { apiFetch, VIN } from '../api'
 
 export function useVehicle() {
   const [data, setData] = useState(null)

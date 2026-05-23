@@ -1,7 +1,6 @@
 import { useState } from 'react'
 import { Thermometer, Loader } from 'lucide-react'
-
-const VIN = 'VR3UHZKXZPT583300'
+import { BASE, VIN } from '../api'
 
 export default function PreconditionButton({ currentStatus, level, isCharging }) {
   const [loading, setLoading] = useState(false)
@@ -13,7 +12,7 @@ export default function PreconditionButton({ currentStatus, level, isCharging })
   async function toggle() {
     setLoading(true)
     try {
-      await fetch(`https://api.vbasquin.com/preconditioning/${VIN}/${isActive ? 0 : 1}`)
+      await fetch(`${BASE}/preconditioning/${VIN}/${isActive ? 0 : 1}`)
       setLocalState(!isActive)
     } catch {}
     setLoading(false)

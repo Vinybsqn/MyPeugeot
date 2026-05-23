@@ -1,4 +1,5 @@
-const BASE = 'https://api.vbasquin.com'
+export const BASE = import.meta.env.VITE_API_URL
+export const VIN = import.meta.env.VITE_VIN
 
 export async function apiFetch(path) {
   const res = await fetch(`${BASE}${path}`)
