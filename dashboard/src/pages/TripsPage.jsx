@@ -1,20 +1,38 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { MapContainer, TileLayer, Polyline } from 'react-leaflet'
 import { useTrips } from '../hooks/useTrips'
 import { Navigation, Clock, Zap, ChevronRight } from 'lucide-react'
+import { fetchRoute } from '../utils/routing'
 
 export default function TripsPage() {
   const { trips, loading } = useTrips()
   const [selected, setSelected] = useState(null)
+  const [routes, setRoutes] = useState({})
+
+  const trip = selected ?? trips[0]
+
+  // Fetch routed polylines for all trips
+  useEffect(() => {
+    if (!trips.length) return
+    trips.forEach(t => {
+      if (!t.positions || routes[t.id] !== undefined) return
+      fetchRoute(t.positions).then(route => {
+        setRoutes(prev => ({ ...prev, [t.id]: route }))
+      })
+    })
+  }, [trips])
 
   if (loading) return <EmptyState loading />
   if (trips.length === 0) return <EmptyState />
 
-  const trip = selected ?? trips[0]
-  const positions = trip.positions
+  const activeRoute = routes[trip?.id]
+  const fallbackPositions = trip?.positions
     ? trip.positions.lat.map((lat, i) => [lat, trip.positions.long[i]])
     : []
-  const center = positions.length ? positions[Math.floor(positions.length / 2)] : [46.6, 1.88]
+  const displayPositions = activeRoute ?? fallbackPositions
+  const center = displayPositions.length
+    ? displayPositions[Math.floor(displayPositions.length / 2)]
+    : [46.6, 1.88]
 
   return (
     <div className="flex flex-col gap-4">
@@ -23,7 +41,7 @@ export default function TripsPage() {
       <div className="card overflow-hidden">
         <div style={{ height: 200 }}>
           <MapContainer
-            key={trip.id}
+            key={trip?.id}
             center={center}
             zoom={13}
             style={{ height: '100%', width: '100%' }}
@@ -32,8 +50,9 @@ export default function TripsPage() {
           >
             <TileLayer url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png" />
             {trips.map(t => {
-              const pts = t.positions ? t.positions.lat.map((lat, i) => [lat, t.positions.long[i]]) : []
-              const isActive = t.id === trip.id
+              const route = routes[t.id]
+              const pts = route ?? (t.positions ? t.positions.lat.map((lat, i) => [lat, t.positions.long[i]]) : [])
+              const isActive = t.id === trip?.id
               return pts.length > 1 && (
                 <Polyline
                   key={t.id}
@@ -49,12 +68,12 @@ export default function TripsPage() {
         </div>
         <div className="px-4 py-3 flex items-center justify-between" style={{ borderTop: '1px solid var(--sep)' }}>
           <div>
-            <div className="text-sm font-semibold" style={{ color: 'var(--t1)' }}>{formatDate(trip.start_at)}</div>
-            <div className="text-xs mt-0.5" style={{ color: 'var(--t3)' }}>{trip.distance?.toFixed(1)} km · {formatDuration(trip.duration)}</div>
+            <div className="text-sm font-semibold" style={{ color: 'var(--t1)' }}>{formatDate(trip?.start_at)}</div>
+            <div className="text-xs mt-0.5" style={{ color: 'var(--t3)' }}>{trip?.distance?.toFixed(1)} km · {formatDuration(trip?.duration)}</div>
           </div>
           <div className="text-right">
-            <div className="text-sm font-semibold" style={{ color: 'var(--t2)' }}>{trip.consumption_km?.toFixed(1)} kWh/100</div>
-            <div className="text-xs mt-0.5" style={{ color: 'var(--t3)' }}>moy. {trip.speed_average?.toFixed(0)} km/h</div>
+            <div className="text-sm font-semibold" style={{ color: 'var(--t2)' }}>{trip?.consumption_km?.toFixed(1)} kWh/100</div>
+            <div className="text-xs mt-0.5" style={{ color: 'var(--t3)' }}>moy. {trip?.speed_average?.toFixed(0)} km/h</div>
           </div>
         </div>
       </div>
