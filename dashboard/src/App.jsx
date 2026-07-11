@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react'
 import { useVehicle } from './hooks/useVehicle'
+import { useChargingNotification } from './hooks/useChargingNotification'
 import HeroCard from './components/HeroCard'
 import BatteryCard from './components/BatteryCard'
 import StatsRow from './components/StatsRow'
@@ -22,6 +23,7 @@ export default function App() {
   const [theme, setTheme] = useState(getSystemTheme)
   const { data, loading, error, lastUpdate, fresh, refresh } = useVehicle()
   const energy = data?.energy?.[0]
+  useChargingNotification(energy)
   const [barWidth, setBarWidth] = useState(0)
   const barTimer = useRef(null)
 

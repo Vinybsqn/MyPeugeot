@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { useChargings } from '../hooks/useChargings'
 import { useTrips } from '../hooks/useTrips'
 import { Zap, Navigation, Euro, Battery } from 'lucide-react'
+import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell } from 'recharts'
 
 const RATE_DAY = 0.29
 const RATE_NIGHT = 0.25
@@ -55,12 +56,12 @@ function getWeekStats(chargings, trips) {
 
 function getMonthStats(chargings, trips) {
   const now = new Date()
-  return Array.from({ length: 6 }, (_, i) => {
+  return Array.from({ length: 12 }, (_, i) => {
     const since = new Date(now.getFullYear(), now.getMonth() - i, 1)
     const until = new Date(now.getFullYear(), now.getMonth() - i + 1, 1)
-    const label = since.toLocaleDateString('fr-FR', { month: 'long', year: 'numeric' })
+    const label = since.toLocaleDateString('fr-FR', { month: 'short' })
     return { label, ...computeStats(chargings, trips, since, until) }
-  }).filter(p => p.sessions > 0 || p.km > 0)
+  }).filter(p => p.sessions > 0 || p.km > 0).reverse()
 }
 
 export default function CostPage() {
@@ -74,7 +75,8 @@ export default function CostPage() {
     </div>
   )
 
-  const periods = period === 'week' ? getWeekStats(chargings, trips) : getMonthStats(chargings, trips)
+  const monthData = getMonthStats(chargings, trips)
+  const periods = period === 'week' ? getWeekStats(chargings, trips) : monthData
 
   return (
     <div className="flex flex-col gap-4">
@@ -92,6 +94,33 @@ export default function CostPage() {
           ))}
         </div>
       </div>
+
+      {/* 12-month chart */}
+      {period === 'month' && monthData.length > 1 && (
+        <div className="card overflow-hidden">
+          <div className="px-5 py-3.5 sep">
+            <p className="text-xs font-semibold tracking-widest uppercase" style={{ color: 'var(--t3)' }}>Coût rechargé · 12 mois</p>
+          </div>
+          <div className="px-2 pt-3 pb-2">
+            <ResponsiveContainer width="100%" height={140}>
+              <BarChart data={monthData} margin={{ top: 4, right: 8, bottom: 0, left: -20 }}>
+                <XAxis dataKey="label" tick={{ fill: 'var(--t3)', fontSize: 9 }} tickLine={false} axisLine={false} />
+                <YAxis tick={{ fill: 'var(--t3)', fontSize: 9 }} tickLine={false} axisLine={false} />
+                <Tooltip
+                  contentStyle={{ background: 'var(--card)', border: '1px solid var(--card-border)', borderRadius: 12, fontSize: 12, color: 'var(--t1)' }}
+                  formatter={v => [`${v.toFixed(2)} €`, 'Coût']}
+                  labelStyle={{ color: 'var(--t3)', fontSize: 10 }}
+                />
+                <Bar dataKey="costCharged" radius={[4, 4, 0, 0]}>
+                  {monthData.map((_, i) => (
+                    <Cell key={i} fill={i === monthData.length - 1 ? '#ff2d55' : 'var(--t3)'} fillOpacity={i === monthData.length - 1 ? 0.9 : 0.35} />
+                  ))}
+                </Bar>
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+        </div>
+      )}
 
       {periods.length === 0 ? (
         <div className="flex flex-col items-center justify-center py-24 gap-3">

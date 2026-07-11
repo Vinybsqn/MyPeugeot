@@ -1,6 +1,7 @@
 import { useVehicle } from '../hooks/useVehicle'
 import { Battery, Zap, Thermometer, Gauge, Mountain, Wind, Eye, Clock } from 'lucide-react'
 import BatteryHistoryCard from '../components/BatteryHistoryCard'
+import HeatmapCard from '../components/HeatmapCard'
 
 export default function StatsPage() {
   const { data, loading } = useVehicle()
@@ -20,6 +21,7 @@ export default function StatsPage() {
       <h2 className="text-xl font-bold px-1" style={{ color: 'var(--t1)' }}>Statistiques</h2>
 
       <BatteryHistoryCard />
+      <HeatmapCard />
 
       <Section title="Batterie">
         <Row icon={<Battery size={15} />} label="Niveau" value={`${energy?.level ?? '--'}%`} />
