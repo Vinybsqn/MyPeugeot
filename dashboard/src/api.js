@@ -1,4 +1,6 @@
-export const BASE = import.meta.env.VITE_API_URL
+export const BASE = import.meta.env.DEV
+  ? import.meta.env.VITE_API_URL
+  : '/proxy'
 export const VIN = import.meta.env.VITE_VIN
 
 export async function apiFetch(path) {
