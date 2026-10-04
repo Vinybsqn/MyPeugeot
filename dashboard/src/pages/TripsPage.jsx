@@ -67,7 +67,7 @@ export default function TripsPage() {
               zoomControl={false}
               attributionControl={false}
             >
-              <TileLayer url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png" />
+              <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
               {displayPositions.length > 1 && (
                 <Polyline positions={displayPositions} pathOptions={{ color: '#ef4444', weight: 3.5, opacity: 0.95 }} />
               )}

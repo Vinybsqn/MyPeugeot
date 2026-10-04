@@ -49,7 +49,7 @@ export default function HeatmapCard() {
           zoomControl={false}
           attributionControl={false}
         >
-          <TileLayer url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png" />
+          <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
           <HeatLayer points={points} />
         </MapContainer>
       </div>

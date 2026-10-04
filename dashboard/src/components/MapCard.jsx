@@ -190,7 +190,7 @@ export default function MapCard({ position }) {
           zoomControl={false}
           attributionControl={false}
         >
-          <TileLayer url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png" />
+          <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
           <Marker position={displayCarPos} icon={carIcon} />
           {mePos && (
             <>
